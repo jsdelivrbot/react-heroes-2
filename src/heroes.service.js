@@ -15,4 +15,9 @@ const getHeroes = new Promise((resolve, reject) => {
   resolve(HEROES);
 });
 
-export { getHeroes };
+const getHeroById = heroId =>
+  new Promise((resolve, reject) => {
+    resolve(HEROES.find(hero => hero.id === heroId));
+  });
+
+export { getHeroes, getHeroById };

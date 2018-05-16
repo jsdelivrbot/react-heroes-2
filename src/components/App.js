@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import HeroesList from "./HeroesList";
 import HeroForm from "./HeroForm";
+import Dashboard from "./Dashboard";
 import "./App.css";
 import { getHeroes } from "../heroes.service";
-
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 //const App = () => {
 class App extends Component {
   state = {
@@ -29,24 +30,14 @@ class App extends Component {
     console.log(hero.name);
   };
 
-  handleInputChange = event => {
-    this.setState({
-      selectedHero: {
-        ...this.state.selectedHero,
-        name: event.target.value
-      }
-    });
-    console.log(event.target.value);
-  };
+  handleFormSubmit = hero => {
+    //event.preventDefault();
 
-  handleFormSubmit = event => {
-    event.preventDefault();
+    // if (!this.state.selectedHero.id) {
+    //   return;
+    // }
 
-    if (!this.state.selectedHero.id) {
-      return;
-    }
-
-    const selectedHero = this.state.selectedHero;
+    const selectedHero = hero;
     const heroes = this.state.heroes;
 
     const selectedHeroIndex = this.state.heroes
@@ -66,24 +57,65 @@ class App extends Component {
     });
   };
 
+  //findHeroById = id => this.state.heroes.find(hero => hero.id === id);
+
   render() {
     return (
-      <div>
+      <Router>
         <div>
-          <h1>React Heroes</h1>
-          <HeroesList
-            heroes={this.state.heroes}
-            handleSelectedHero={this.handleSelectedHero}
+          <nav>
+            <NavLink exact to="/">
+              DashBoard
+            </NavLink>
+            |
+            <NavLink exact to="/heroes">
+              Heroes
+            </NavLink>
+          </nav>
+          <hr />
+          <Route
+            exact
+            path="/heroes"
+            render={props => (
+              <HeroesList
+                heroes={this.state.heroes}
+                handleSelectedHero={this.handleSelectedHero}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/"
+            render={props => <Dashboard heroes={this.state.heroes} />}
+          />
+          <Route
+            exact
+            path="/heroes/details/:id"
+            render={props => (
+              <HeroForm {...props} handleFormSubmit={this.handleFormSubmit} />
+            )}
           />
         </div>
-        <HeroForm
-          selectedHero={this.state.selectedHero}
-          handleFormSubmit={this.handleFormSubmit}
-          handleInputChange={this.handleInputChange}
-        />
-      </div>
+      </Router>
     );
   }
+}
+
+{
+  /* <div>
+<div>
+  <h1>React Heroes</h1>
+  <HeroesList
+    heroes={this.state.heroes}
+    handleSelectedHero={this.handleSelectedHero}
+  />
+</div>
+<HeroForm
+  selectedHero={this.state.selectedHero}
+  handleFormSubmit={this.handleFormSubmit}
+  handleInputChange={this.handleInputChange}
+/>
+</div> */
 }
 
 export default App;
